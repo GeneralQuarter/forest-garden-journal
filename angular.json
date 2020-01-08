@@ -128,5 +128,8 @@
       }
     }
   },
-  "defaultProject": "forest-garden-journal"
+  "defaultProject": "forest-garden-journal",
+  "cli": {
+    "analytics": "e85b9fba-cf2a-476e-bcaf-b12194bc7169"
+  }
 }
