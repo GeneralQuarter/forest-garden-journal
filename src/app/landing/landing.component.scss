@@ -1,0 +1,46 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+mat-toolbar-row, mat-toolbar {
+  min-height: 46px;
+  height: 46px;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 46px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  @media screen and (min-width: 1000px){
+    flex-direction: row-reverse;
+
+    section {
+      &:last-child {
+        max-width: 400px;
+      }
+    }
+  }
+
+  section {
+    flex: 1;
+
+    &:first-child {
+      background: #414141;
+    }
+  }
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}

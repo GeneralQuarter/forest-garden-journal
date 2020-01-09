@@ -1,0 +1,13 @@
+<form [formGroup]="form" (ngSubmit)="submit(model)">
+  <mat-card>
+    <mat-card-content>
+      <mat-card-title>Inscription</mat-card-title>
+      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <a mat-flat-button routerLink="/">Retour a l'acceuil</a>
+      <a mat-stroked-button color="primary" routerLink="/sign-in">Connexion</a>
+      <button mat-flat-button type="submit" color="primary">S'inscrire</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
