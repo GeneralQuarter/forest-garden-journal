@@ -7,16 +7,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { LandingComponent } from './landing/landing.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { ReactiveFormsModule, Validators } from '@angular/forms';
 import { SignUpComponent } from './sign-up/sign-up.component';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatIconModule } from '@angular/material/icon';
 import { MapComponent } from './map/map.component';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { AppMaterialModule } from './app.material.module';
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -31,9 +33,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    MatToolbarModule,
-    MatCardModule,
-    MatButtonModule,
+    AppMaterialModule,
     FormlyModule.forRoot({
       validators: [
         {name: 'email', validation: Validators.email}
@@ -44,9 +44,12 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
       ],
     }),
     FormlyMaterialModule,
-    MatSidenavModule,
-    MatIconModule,
     LeafletModule.forRoot(),
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+    AngularFireAuthGuardModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [],
   bootstrap: [AppComponent]

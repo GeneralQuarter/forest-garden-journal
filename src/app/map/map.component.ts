@@ -1,12 +1,16 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { latLng, polygon, tileLayer } from 'leaflet';
+import { latLng, Layer, marker, polygon, tileLayer } from 'leaflet';
+import { MarkerService } from '../services/marker.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { markerIcon } from './marker-icon';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements OnInit, AfterViewInit {
   options = {
     layers: [
       tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -31,7 +35,20 @@ export class MapComponent implements AfterViewInit {
     [46.4797012, 0.8919543]
   ]);
 
-  constructor() { }
+  markerLayers$: Observable<Layer[]>;
+
+  constructor(
+    private markerService: MarkerService
+  ) { }
+
+  ngOnInit(): void {
+    this.markerLayers$ = this.markerService.markers.pipe(
+      map(markers => markers.map(m => marker(latLng(m.position.latitude, m.position.longitude), {
+        title: `Balise ${m.name}`,
+        icon: markerIcon(m.name, m.orientation)
+      }))),
+    );
+  }
 
   ngAfterViewInit(): void {
     window.dispatchEvent(new Event('resize'));
