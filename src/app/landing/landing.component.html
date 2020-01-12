@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" dense>
   <mat-toolbar-row>
     <span>Forest Garden Journal</span>
     <span class="toolbar-spacer"></span>
@@ -9,5 +9,7 @@
   <section id="map-container">
     <app-map></app-map>
   </section>
-  <section id="info-container"></section>
+  <section id="info-container">
+    <router-outlet></router-outlet>
+  </section>
 </main>

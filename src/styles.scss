@@ -7,3 +7,39 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background: transparent;
   border: none;
 }
+
+mat-toolbar-row, mat-toolbar {
+  min-height: 46px !important;
+  height: 46px !important;
+}
+
+.mat-form-field-infix {
+  width: 150px !important;
+}
+
+.form-row {
+  display: flex;
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+
+    .form-col {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
+
+  .form-col {
+    flex: 1;
+    margin-left: 8px;
+    margin-right: 8px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}

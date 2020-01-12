@@ -1,0 +1,17 @@
+<mat-toolbar color="accent">
+  <mat-toolbar-row>
+    <button mat-icon-button aria-label="Retour" routerLink="../..">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Ajouter un Emplacement</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<form [formGroup]="form" (ngSubmit)="submit(model)">
+  <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+  <button mat-flat-button
+          type="submit"
+          color="primary"
+          [disabled]="!model.location">
+    {{ model.location ? 'Creer un emplacement sur ' + model.location : 'Aucun emplacement disponible' }}
+  </button>
+</form>

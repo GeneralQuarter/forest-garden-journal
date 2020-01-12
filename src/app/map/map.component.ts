@@ -1,9 +1,13 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { latLng, Layer, marker, polygon, tileLayer } from 'leaflet';
+import { latLng, Layer, marker, tileLayer } from 'leaflet';
 import { MarkerService } from '../services/marker.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { markerIcon } from './marker-icon';
+import { MapSelectionService } from '../services/map-selection.service';
+import { MapObjectType } from '../models/map-object-type';
+import { gardenLimits } from '../garden-limits';
+import { MapDrawingService } from '../services/map-drawing.service';
 
 @Component({
   selector: 'app-map',
@@ -24,30 +28,38 @@ export class MapComponent implements OnInit, AfterViewInit {
     center: latLng(46.4801794, 0.8926283)
   };
 
-  gardenLimitLayer = polygon([
-    [46.4805400, 0.8919087],
-    [46.4805700, 0.8938935],
-    [46.4801987, 0.8939683],
-    [46.4801505, 0.8935218],
-    [46.4800024, 0.8935571],
-    [46.4799840, 0.8933780],
-    [46.4798300, 0.8934160],
-    [46.4797012, 0.8919543]
-  ]);
+  gardenLimitLayer = gardenLimits;
 
   markerLayers$: Observable<Layer[]>;
+  drawingLayer$: Observable<Layer[]>;
 
   constructor(
-    private markerService: MarkerService
+    private markerService: MarkerService,
+    private mapSelectionService: MapSelectionService,
+    private mapDrawingService: MapDrawingService,
   ) { }
 
   ngOnInit(): void {
     this.markerLayers$ = this.markerService.markers.pipe(
-      map(markers => markers.map(m => marker(latLng(m.position.latitude, m.position.longitude), {
-        title: `Balise ${m.name}`,
-        icon: markerIcon(m.name, m.orientation)
-      }))),
+      map(markers => markers.map(m => {
+        const layer = marker(latLng(m.position.latitude, m.position.longitude), {
+          title: `Balise ${m.name}`,
+          icon: markerIcon(m.name, m.orientation)
+        });
+
+        layer.on('click', () => {
+          this.mapSelectionService.updateActiveSelection({
+            type: MapObjectType.Marker,
+            id: m.id,
+            name: `Balise ${m.name}`,
+            position: m.position
+          });
+        });
+
+        return layer;
+      })),
     );
+    this.drawingLayer$ = this.mapDrawingService.layers;
   }
 
   ngAfterViewInit(): void {

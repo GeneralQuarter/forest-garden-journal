@@ -19,6 +19,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { JournalComponent } from './journal/journal.component';
+import { PlantLocationAddComponent } from './plant-location-add/plant-location-add.component';
+import { SelectFromMapComponent } from './select-from-map/select-from-map.component';
+import { FormlySelectFromMap } from './formly-select-from-map-input';
 
 @NgModule({
   declarations: [
@@ -26,7 +30,11 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     LandingComponent,
     SignInComponent,
     SignUpComponent,
-    MapComponent
+    MapComponent,
+    JournalComponent,
+    PlantLocationAddComponent,
+    SelectFromMapComponent,
+    FormlySelectFromMap
   ],
   imports: [
     BrowserModule,
@@ -35,6 +43,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     ReactiveFormsModule,
     AppMaterialModule,
     FormlyModule.forRoot({
+      types: [
+        {name: 'select-from-map-input', component: FormlySelectFromMap, wrappers: ['form-field']},
+      ],
       validators: [
         {name: 'email', validation: Validators.email}
       ],
@@ -49,7 +60,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     AngularFirestoreModule,
     AngularFireAuthModule,
     AngularFireAuthGuardModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production})
   ],
   providers: [],
   bootstrap: [AppComponent]
