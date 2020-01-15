@@ -4,6 +4,10 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-nav-list>
-  <h3 matSubheader>Actions</h3>
-  <a mat-list-item routerLink="/plant-locations/add">Ajouter un Emplacement</a>
+  <h3 matSubheader>Liens</h3>
+  <a mat-list-item routerLink="/plants">Plantes</a>
+  <ng-container *ngIf="isAdmin$ | async">
+    <h3 matSubheader>Actions</h3>
+    <a mat-list-item routerLink="/plant-locations/add">Ajouter un Emplacement</a>
+  </ng-container>
 </mat-nav-list>

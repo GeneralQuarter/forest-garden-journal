@@ -3,11 +3,15 @@
     <mat-card-content>
       <mat-card-title>Inscription</mat-card-title>
       <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+      <span *ngIf="submitError" [ngSwitch]="submitError.code" class="mat-error">
+        <span *ngSwitchCase="'auth/email-already-in-use'">Email déja utilisé par un autre compte</span>
+        <span *ngSwitchDefault>Impossible de créer le compte. Un erreur innattendue est survenue</span>
+      </span>
     </mat-card-content>
     <mat-card-actions align="end">
       <a mat-flat-button routerLink="/">Retour a l'acceuil</a>
       <a mat-stroked-button color="primary" routerLink="/sign-in">Connexion</a>
-      <button mat-flat-button type="submit" color="primary">S'inscrire</button>
+      <button mat-flat-button type="submit" color="primary" [disabled]="submitLoading">S'inscrire</button>
     </mat-card-actions>
   </mat-card>
 </form>

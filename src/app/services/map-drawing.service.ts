@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Circle, Layer, LatLngExpression, marker } from 'leaflet';
+import { Circle, Layer, LatLngExpression, marker, Marker } from 'leaflet';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { newMarkerIcon } from '../map/marker-icon';
@@ -8,7 +8,7 @@ import { newMarkerIcon } from '../map/marker-icon';
   providedIn: 'root'
 })
 export class MapDrawingService {
-  private objects = new BehaviorSubject<{[id: string]: Layer}>({});
+  private objects = new BehaviorSubject<{[id: string]: Marker | Circle}>({});
 
   constructor() {}
 
@@ -16,7 +16,7 @@ export class MapDrawingService {
     return this.objects.pipe(map(os => Object.values(os)));
   }
 
-  addNewMarker(id: string, center: LatLngExpression) {
+  addIntersectionMarker(id: string, center: LatLngExpression) {
     const nextValue = {
       ...this.objects.value,
       [id]: marker(center, {
@@ -37,6 +37,10 @@ export class MapDrawingService {
     delete nextValue[id];
 
     this.objects.next(nextValue);
+  }
+
+  getObject(id: string): Circle | Marker {
+    return this.objects.value[id];
   }
 
   addCircle(id: string, center: LatLngExpression, radius: number) {

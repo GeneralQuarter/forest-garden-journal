@@ -1,5 +1,6 @@
 <div leaflet [leafletOptions]="options">
   <div [leafletLayer]="gardenLimitLayer"></div>
+  <div *ngFor="let layer of plantLocationLayers$ | async" [leafletLayer]="layer"></div>
   <div *ngFor="let layer of markerLayers$ | async" [leafletLayer]="layer"></div>
   <div *ngFor="let layer of drawingLayer$ | async" [leafletLayer]="layer"></div>
 </div>

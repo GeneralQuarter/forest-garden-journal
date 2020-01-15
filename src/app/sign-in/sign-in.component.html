@@ -3,11 +3,17 @@
     <mat-card-content>
       <mat-card-title>Connexion</mat-card-title>
       <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+      <span *ngIf="submitError" [ngSwitch]="submitError.code" class="mat-error">
+        <span *ngSwitchCase="'auth/wrong-password'">Email ou mot de passe incorrect</span>
+        <span *ngSwitchCase="'auth/user-disabled'">Utilisateur désactivé</span>
+        <span *ngSwitchCase="'auth/user-not-found'">Email ou mot de passe incorrect</span>
+        <span *ngSwitchDefault>Une erreur innattendue est survenue</span>
+      </span>
     </mat-card-content>
     <mat-card-actions align="end">
       <a mat-flat-button routerLink="/password-reset">Mot de passe oublié</a>
       <a mat-stroked-button color="primary" routerLink="/sign-up">S'inscrire</a>
-      <button mat-flat-button type="submit" color="primary">Connexion</button>
+      <button mat-flat-button type="submit" color="primary" [disabled]="submitLoading">Connexion</button>
     </mat-card-actions>
   </mat-card>
 </form>

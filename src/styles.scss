@@ -43,3 +43,7 @@ mat-toolbar-row, mat-toolbar {
     }
   }
 }
+
+.mat-checkbox-checked .mat-checkbox-background {
+  background: #673ab7;
+}

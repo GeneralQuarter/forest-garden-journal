@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-journal',
@@ -6,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./journal.component.scss']
 })
 export class JournalComponent implements OnInit {
+  isAdmin$: Observable<boolean>;
 
-  constructor() { }
+  constructor(
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
+    this.isAdmin$ = this.userService.isAdmin;
   }
 
 }

@@ -85,3 +85,20 @@ export function newMarkerIcon(text: string) {
     iconAnchor: [16, 30]
   });
 }
+
+export function emplacementMarkerIcon(text: string, subText: string) {
+  return new DivIcon({
+    html: `
+      <svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+        <g>
+          <rect rx="6" height="40" width="40" y="4" x="12" stroke-width="1.5" stroke="#000" fill="#fff"/>
+          <line y2="60" x2="32" y1="44" x1="32" stroke-width="1.5" stroke="#000"/>
+          <text text-anchor="middle" font-size="20" y="22" x="32" stroke-width="0" stroke="#000" fill="#000000">${text}</text>
+          <text stroke="#000" text-anchor="middle" font-size="20" y="40" x="32" stroke-width="0" fill="#000000">${subText}</text>
+        </g>
+      </svg>
+    `,
+    iconSize: [64, 64],
+    iconAnchor: [32, 60]
+  });
+}

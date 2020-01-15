@@ -1,10 +1,9 @@
 import { MapObjectType } from './map-object-type';
-import GeoPoint = firebase.firestore.GeoPoint;
-import * as firebase from 'firebase';
+import { firestore } from 'firebase/app';
 
 export interface MapSelection {
   type: MapObjectType;
   id: string;
   name: string;
-  position: GeoPoint;
+  position: firestore.GeoPoint;
 }

@@ -1,17 +1,18 @@
 <mat-toolbar color="accent">
   <mat-toolbar-row>
-    <button mat-icon-button aria-label="Retour" routerLink="../..">
+    <button mat-icon-button aria-label="Retour" routerLink="..">
       <mat-icon>arrow_back</mat-icon>
     </button>
-    <span>Ajouter un Emplacement</span>
+    <span>Ajouter Plante</span>
   </mat-toolbar-row>
 </mat-toolbar>
 <form [formGroup]="form" (ngSubmit)="submit(model)">
   <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+  <span class="mat-error">{{ submitError }}</span>
   <button mat-flat-button
           type="submit"
           color="primary"
-          [disabled]="!model.intersection || submitLoading">
-    {{ model.intersection ? 'Creer un emplacement sur ' + model.intersection : 'Aucun emplacement disponible' }}
+          [disabled]="submitLoading">
+    Créer Plante
   </button>
 </form>

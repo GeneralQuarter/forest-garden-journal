@@ -1,0 +1,9 @@
+mat-toolbar-row {
+  position: relative;
+}
+
+button[mat-mini-fab] {
+  position: absolute;
+  bottom: -16px;
+  right: 16px;
+}

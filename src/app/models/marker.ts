@@ -1,10 +1,9 @@
-import * as firebase from 'firebase';
-import GeoPoint = firebase.firestore.GeoPoint;
 import { MarkerOrientation } from '../map/marker-icon';
+import { firestore } from 'firebase/app';
 
 export interface Marker {
   id?: string;
   name: string;
-  position: GeoPoint;
+  position: firestore.GeoPoint;
   orientation: MarkerOrientation;
 }

@@ -23,6 +23,12 @@ import { JournalComponent } from './journal/journal.component';
 import { PlantLocationAddComponent } from './plant-location-add/plant-location-add.component';
 import { SelectFromMapComponent } from './select-from-map/select-from-map.component';
 import { FormlySelectFromMap } from './formly-select-from-map-input';
+import { PlantLocationComponent } from './plant-location/plant-location.component';
+import { PlantsComponent } from './plants/plants.component';
+import { PlantAddComponent } from './plant-add/plant-add.component';
+import { PlantComponent } from './plant/plant.component';
+import { HttpClientModule } from '@angular/common/http';
+import { PlantLatinNameComponent } from './plant-latin-name/plant-latin-name.component';
 
 @NgModule({
   declarations: [
@@ -34,12 +40,18 @@ import { FormlySelectFromMap } from './formly-select-from-map-input';
     JournalComponent,
     PlantLocationAddComponent,
     SelectFromMapComponent,
-    FormlySelectFromMap
+    FormlySelectFromMap,
+    PlantLocationComponent,
+    PlantsComponent,
+    PlantAddComponent,
+    PlantComponent,
+    PlantLatinNameComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AppMaterialModule,
     FormlyModule.forRoot({
@@ -52,6 +64,7 @@ import { FormlySelectFromMap } from './formly-select-from-map-input';
       validationMessages: [
         {name: 'email', message: 'Cet email n\'est pas valide'},
         {name: 'required', message: 'Ce champ est requis'},
+        {name: 'minlength', message: (e, field) => `Minimun ${field.templateOptions.minLength} caractères`},
       ],
     }),
     FormlyMaterialModule,

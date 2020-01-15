@@ -7,6 +7,12 @@ import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { gardenLimits } from '../garden-limits';
 import { MapDrawingService } from '../services/map-drawing.service';
 import { map, tap } from 'rxjs/operators';
+import { PlantLocation } from '../models/plant-location';
+import { latLngToGeoPoint } from '../models/geo-point.converter';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { MapSelection } from '../models/map-selection';
+import { Measure } from '../models/measure';
+import { PlantLocationService } from '../services/plant-location.service';
 
 @Component({
   selector: 'app-plant-location-add',
@@ -18,14 +24,14 @@ export class PlantLocationAddComponent {
   model: {[id: string]: any} = {};
   fields: FormlyFieldConfig[] = [
     {
-      key: 'mapObjects',
+      key: 'measures',
       fieldGroup: [
-        ...this.mapObjectFormGroup('Première Mesure', 'firstMapObject'),
-        ...this.mapObjectFormGroup('Deuxième Mesure', 'secondMapObject'),
+        ...this.mapObjectFormGroup('Première Mesure', 'measure1'),
+        ...this.mapObjectFormGroup('Deuxième Mesure', 'measure2'),
       ]
     },
     {
-      key: 'location',
+      key: 'intersection',
       type: 'select',
       templateOptions: {
         label: 'Intersection',
@@ -36,24 +42,26 @@ export class PlantLocationAddComponent {
       },
       hooks: {
         onInit: field => {
-          field.templateOptions.options = this.form.get('mapObjects').valueChanges.pipe(
+          field.templateOptions.options = this.form.get('measures').valueChanges.pipe(
             map(value => {
               this.mapDrawingService.removeObject('I1');
               this.mapDrawingService.removeObject('I2');
 
-              const {firstMapObject, secondMapObject} = value;
+              const {measure1, measure2} = value;
 
-              if (!(firstMapObject.object && firstMapObject.radius && secondMapObject.object && secondMapObject.radius)) {
+              if (!(measure1.from && measure1.distance && measure2.from && measure2.distance && measure1.from.id !== measure2.from.id)) {
                 return [];
               }
 
               const poly1 = circle(
-                [firstMapObject.object.position.longitude, firstMapObject.object.position.latitude],
-                parseFloat(firstMapObject.radius) / 1000
+                [measure1.from.position.longitude, measure1.from.position.latitude],
+                parseFloat(measure1.distance) / 1000,
+                {steps: 360}
               );
               const poly2 = circle(
-                [secondMapObject.object.position.longitude, secondMapObject.object.position.latitude],
-                parseFloat(secondMapObject.radius) / 1000
+                [measure2.from.position.longitude, measure2.from.position.latitude],
+                parseFloat(measure2.distance) / 1000,
+                {steps: 360}
               );
 
               const points = lineIntersect(poly1, poly2);
@@ -64,7 +72,7 @@ export class PlantLocationAddComponent {
                 .filter(p => booleanPointInPolygon(p, bounds))
                 .map((p, i) => {
                   const id = `I${i + 1}`;
-                  this.mapDrawingService.addNewMarker(id, [p.geometry.coordinates[1], p.geometry.coordinates[0]]);
+                  this.mapDrawingService.addIntersectionMarker(id, [p.geometry.coordinates[1], p.geometry.coordinates[0]]);
                   return {id, name: id};
                 });
             }),
@@ -79,8 +87,13 @@ export class PlantLocationAddComponent {
     }
   ];
 
+  submitError = '';
+  submitLoading = false;
+
   constructor(
-    private mapDrawingService: MapDrawingService
+    private mapDrawingService: MapDrawingService,
+    private db: AngularFirestore,
+    private plantLocationService: PlantLocationService,
   ) {
   }
 
@@ -103,7 +116,7 @@ export class PlantLocationAddComponent {
         },
         fieldGroup: [
           {
-            key: 'object',
+            key: 'from',
             type: 'select-from-map-input',
             className: 'form-col',
             templateOptions: {
@@ -112,7 +125,7 @@ export class PlantLocationAddComponent {
             }
           },
           {
-            key: 'radius',
+            key: 'distance',
             type: 'input',
             className: 'form-col',
             templateOptions: {
@@ -133,11 +146,11 @@ export class PlantLocationAddComponent {
     field.formControl.valueChanges.subscribe(value => {
       this.mapDrawingService.removeCircle(field.key);
 
-      if (!(value.object && value.radius)) {
+      if (!(value.from && value.distance)) {
         return;
       }
 
-      const radius = parseFloat(value.radius);
+      const radius = parseFloat(value.distance);
 
       if (isNaN(radius)) {
         return;
@@ -145,13 +158,42 @@ export class PlantLocationAddComponent {
 
       this.mapDrawingService.addCircle(
         field.key,
-        [value.object.position.latitude, value.object.position.longitude],
+        [value.from.position.latitude, value.from.position.longitude],
         radius
       );
     });
   }
 
-  submit(model) {
-    console.log(model);
+  modelMeasureToMeasure(modelMeasure: {from: MapSelection, distance: number}): Measure {
+    return {
+      from: this.db.doc(`${modelMeasure.from.type}/${modelMeasure.from.id}`).ref,
+      distance: modelMeasure.distance
+    };
+  }
+
+  async submit(model) {
+    this.submitError = '';
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    const intersection = this.mapDrawingService.getObject(model.intersection);
+
+    const plantLocation: PlantLocation = {
+      position: latLngToGeoPoint(intersection.getLatLng()),
+      measure1: this.modelMeasureToMeasure(model.measures.measure1),
+      measure2: this.modelMeasureToMeasure(model.measures.measure2)
+    };
+
+    this.submitLoading = true;
+
+    try {
+      await this.plantLocationService.addPlantLocation(plantLocation);
+    } catch (e) {
+      this.submitError = e;
+    }
+
+    this.submitLoading = false;
   }
 }

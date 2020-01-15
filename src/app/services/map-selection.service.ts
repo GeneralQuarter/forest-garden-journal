@@ -10,6 +10,10 @@ export class MapSelectionService {
   private selections = new BehaviorSubject<{[id: string]: MapSelection | null}>({});
   private activeSelectionId: string;
 
+  get isSelecting() {
+    return !!this.activeSelectionId;
+  }
+
   registerSelection(selectionId: string): Observable<MapSelection | null> {
     const value = this.selections.value;
     this.selections.next({

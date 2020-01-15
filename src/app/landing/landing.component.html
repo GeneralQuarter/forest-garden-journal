@@ -2,7 +2,13 @@
   <mat-toolbar-row>
     <span>Forest Garden Journal</span>
     <span class="toolbar-spacer"></span>
-    <button mat-button routerLink="/sign-in">Connexion</button>
+    <button mat-button *ngIf="profile$ | async as profile; else notLoggedIn" [matMenuTriggerFor]="profileMenu">{{ profile.name }}</button>
+    <mat-menu #profileMenu="matMenu">
+      <button mat-menu-item (click)="signOut()">Déconnexion</button>
+    </mat-menu>
+    <ng-template #notLoggedIn>
+      <button mat-button routerLink="/sign-in">Connexion</button>
+    </ng-template>
   </mat-toolbar-row>
 </mat-toolbar>
 <main>

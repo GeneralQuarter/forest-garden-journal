@@ -1,13 +1,16 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { latLng, Layer, marker, tileLayer } from 'leaflet';
+import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
+import { circleMarker, latLng, Layer, marker, tileLayer } from 'leaflet';
 import { MarkerService } from '../services/marker.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { markerIcon } from './marker-icon';
+import { emplacementMarkerIcon, markerIcon, newMarkerIcon } from './marker-icon';
 import { MapSelectionService } from '../services/map-selection.service';
 import { MapObjectType } from '../models/map-object-type';
 import { gardenLimits } from '../garden-limits';
 import { MapDrawingService } from '../services/map-drawing.service';
+import { PlantLocationService } from '../services/plant-location.service';
+import { geoPointToLatLng } from '../models/geo-point.converter';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-map',
@@ -31,12 +34,16 @@ export class MapComponent implements OnInit, AfterViewInit {
   gardenLimitLayer = gardenLimits;
 
   markerLayers$: Observable<Layer[]>;
+  plantLocationLayers$: Observable<Layer[]>;
   drawingLayer$: Observable<Layer[]>;
 
   constructor(
     private markerService: MarkerService,
     private mapSelectionService: MapSelectionService,
     private mapDrawingService: MapDrawingService,
+    private plantLocationService: PlantLocationService,
+    private router: Router,
+    private ngZone: NgZone,
   ) { }
 
   ngOnInit(): void {
@@ -60,10 +67,40 @@ export class MapComponent implements OnInit, AfterViewInit {
       })),
     );
     this.drawingLayer$ = this.mapDrawingService.layers;
+    this.plantLocationLayers$ = this.plantLocationService.plantLocations.pipe(
+      map(plantLocations => plantLocations.map((pl) => {
+        const layer = marker(geoPointToLatLng(pl.position), {
+          title: `Emplacement Sans Plante`,
+          icon: emplacementMarkerIcon('E', 'SP'),
+        });
+
+        layer.on('click', () => {
+          if (!this.mapSelectionService.isSelecting) {
+            this.navigate(['plant-locations', pl.id]);
+            return;
+          }
+
+          this.mapSelectionService.updateActiveSelection({
+            type: MapObjectType.PlantLocation,
+            id: pl.id,
+            name: `Emplacement Sans Plante`,
+            position: pl.position
+          });
+        });
+
+        return layer;
+      }))
+    );
   }
 
   ngAfterViewInit(): void {
     window.dispatchEvent(new Event('resize'));
+  }
+
+  navigate(commands: any[]) {
+    this.ngZone.run(() => {
+      this.router.navigate(commands);
+    });
   }
 
 }

@@ -1,0 +1,18 @@
+<mat-toolbar color="accent">
+  <mat-toolbar-row>
+    <button mat-icon-button aria-label="Retour" routerLink="..">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span>Plantes</span>
+    <button mat-mini-fab routerLink="add" color="primary" *ngIf="isAdmin$ | async">
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-nav-list>
+  <a mat-list-item *ngFor="let plant of plants$ | async; trackBy: trackByPlantId" [routerLink]="[plant.id]">
+    <span mat-line>{{ plant.common }}</span>
+    <app-plant-latin-name [plant]="plant" mat-line></app-plant-latin-name>
+  </a>
+</mat-nav-list>

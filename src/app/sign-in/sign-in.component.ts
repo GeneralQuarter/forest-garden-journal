@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
+import { auth } from 'firebase/app';
 
 @Component({
   selector: 'app-sign-in',
@@ -36,10 +39,32 @@ export class SignInComponent {
     }
   ];
 
-  constructor() {
-  }
+  submitError: auth.Error;
+  submitLoading = false;
 
-  submit(model) {
-    console.log(model);
+  constructor(
+    private userService: UserService,
+    private router: Router,
+  ) {}
+
+  async submit(model) {
+    this.submitError = null;
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    const {email, password} = model;
+
+    this.submitLoading = true;
+
+    try {
+      await this.userService.signInUser(email, password);
+      this.router.navigateByUrl('/');
+    } catch (e) {
+      this.submitError = e;
+    }
+
+    this.submitLoading = false;
   }
 }
