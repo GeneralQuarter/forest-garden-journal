@@ -21,10 +21,6 @@ export class PlantCategoryService {
     return this.collection$;
   }
 
-  getPlantCategory(id: string): Observable<PlantCategory> {
-    return this.getPlantDoc(id).valueChanges();
-  }
-
   getPlantRef(id: string): DocumentReference {
     return this.getPlantDoc(id).ref;
   }

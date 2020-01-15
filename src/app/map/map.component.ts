@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
-import { circleMarker, latLng, Layer, marker, tileLayer } from 'leaflet';
+import { latLng, Layer, marker, tileLayer } from 'leaflet';
 import { MarkerService } from '../services/marker.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { emplacementMarkerIcon, markerIcon, newMarkerIcon } from './marker-icon';
+import { emplacementMarkerIcon, markerIcon } from './marker-icon';
 import { MapSelectionService } from '../services/map-selection.service';
 import { MapObjectType } from '../models/map-object-type';
 import { gardenLimits } from '../garden-limits';
